@@ -174,7 +174,7 @@ hr { border: none; border-top: 1px solid hsl(var(--border)); margin: 2.5rem 0; }
 .link-more { font-size: .875rem; font-weight: 500; white-space: nowrap; color: hsl(var(--muted-foreground)); }
 .link-more:hover { color: hsl(var(--foreground)); }
 
-.sec__pills { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; align-content: start; }
+.sec__pills { list-style: none; margin: 0; padding: .5rem 0 0; display: flex; flex-wrap: wrap; gap: .5rem; align-content: start; }
 .sec__pills li {
   font-size: .875rem; font-weight: 500;
   background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground));
@@ -199,6 +199,7 @@ hr { border: none; border-top: 1px solid hsl(var(--border)); margin: 2.5rem 0; }
 }
 .card:hover { box-shadow: 0 4px 16px -2px hsl(var(--foreground) / .08); border-color: hsl(var(--foreground) / .25); text-decoration: none; transform: translateY(-2px); }
 .card__title { font-size: 1.05rem; font-weight: 600; letter-spacing: -.01em; color: hsl(var(--card-foreground)); margin: 0; }
+.card__mech { font-size: .8rem; font-weight: 500; color: hsl(var(--muted-foreground)); margin: -.25rem 0 0; }
 .card__desc { font-size: .9rem; color: hsl(var(--muted-foreground)); margin: 0; }
 .card__more { font-size: .875rem; font-weight: 500; color: hsl(var(--foreground)); margin-top: auto; }
 
@@ -246,6 +247,14 @@ hr { border: none; border-top: 1px solid hsl(var(--border)); margin: 2.5rem 0; }
 .cat { padding: clamp(1.75rem, 3vw, 2.75rem) 0; }
 .cat + .cat { border-top: 1px solid hsl(var(--border)); }
 .cat__title { font-size: 1.05rem; font-weight: 600; color: hsl(var(--foreground)); margin-bottom: 1.25rem; }
+
+/* секция «О проекте» — чёрный блок, текст по левому краю */
+.sec--about { background: hsl(240 10% 3.9%); color: #fff; }
+.sec--about .sec__narrow { max-width: 44rem; margin-inline: 0; }
+.sec--about h2 { color: #fff; }
+.sec--about p { color: rgba(255, 255, 255, .75); }
+.sec--about .btn--primary { background: #fff; color: hsl(240 10% 3.9%); }
+.sec--about .btn--primary:hover { opacity: .9; color: hsl(240 10% 3.9%); }
 
 /* ---------- статья ---------- */
 .prose-page { padding: clamp(2.5rem, 4vw, 4rem) 0 clamp(3rem, 5vw, 5rem); }
