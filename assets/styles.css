@@ -128,12 +128,25 @@ hr { border: none; border-top: 1px solid hsl(var(--border)); margin: 2.5rem 0; }
 
 .nav-toggle { display: none; }
 
-/* ---------- hero ---------- */
-.hero { padding: clamp(3rem, 6vw, 6rem) 0 clamp(2.5rem, 4vw, 4rem); }
-.hero__inner { max-width: 48rem; }
-.hero__title { font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem); font-weight: 800; letter-spacing: -0.035em; margin-bottom: .5em; }
-.hero__lead { font-size: 1.2rem; color: hsl(var(--muted-foreground)); max-width: 44ch; }
+/* ---------- hero (чёрный баннер) ---------- */
+.hero { padding: clamp(1.5rem, 3vw, 2.75rem) 0; }
+.hero__banner {
+  background: hsl(240 10% 3.9%);
+  color: #fff;
+  border-radius: 1rem;
+  padding: clamp(2.25rem, 5vw, 4.5rem);
+  border: 1px solid hsl(240 6% 14%);
+}
+.hero__banner .eyebrow { color: rgba(255, 255, 255, .6); }
+.hero__title { font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem); font-weight: 800; letter-spacing: -0.035em; margin-bottom: .5em; max-width: 18ch; }
+.hero__banner .hero__title { color: #fff; }
+.hero__lead { font-size: 1.2rem; color: rgba(255, 255, 255, .75); max-width: 46ch; }
 .hero__cta { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+/* инвертированные кнопки на тёмном баннере */
+.hero__banner .btn--primary { background: #fff; color: hsl(240 10% 3.9%); }
+.hero__banner .btn--primary:hover { opacity: .9; color: hsl(240 10% 3.9%); }
+.hero__banner .btn--ghost { border-color: rgba(255, 255, 255, .25); color: #fff; background: transparent; }
+.hero__banner .btn--ghost:hover { background: rgba(255, 255, 255, .12); color: #fff; }
 
 /* ---------- кнопки (shadcn button) ---------- */
 .btn {
