@@ -139,7 +139,7 @@ hr { border: none; border-top: 1px solid hsl(var(--border)); margin: 2.5rem 0; }
   background: hsl(240 10% 3.9%);
   color: #fff;
   border-radius: 1rem;
-  padding: clamp(2.25rem, 5vw, 4.5rem);
+  padding: 48px;
   border: 1px solid hsl(240 6% 14%);
 }
 .hero__banner .eyebrow { color: rgba(255, 255, 255, .6); }
