@@ -131,6 +131,7 @@ hr { border: none; border-top: 1px solid hsl(var(--border)); margin: 2.5rem 0; }
 :root.dark .theme-toggle .icon-moon { display: none; }
 
 .nav-toggle { display: none; }
+.nav-toggle svg { width: 1rem; height: 1rem; flex: none; }
 
 /* ---------- hero (чёрный баннер) ---------- */
 .hero { padding: clamp(1.5rem, 3vw, 2.75rem) 0; }
@@ -334,6 +335,9 @@ th { font-size: .8rem; font-weight: 600; color: hsl(var(--muted-foreground)); }
   .prose-aside { position: static; flex-direction: row; align-items: center; flex-wrap: wrap; }
 }
 @media (max-width: 640px) {
+  :root { --shell-pad: 8px; }
+  .hero__cta { flex-direction: column; align-items: stretch; }
+  .hero__cta .btn { width: 100%; }
   .nav-groups { display: none; }
   .nav-toggle {
     display: inline-flex; align-items: center; gap: .4rem;
