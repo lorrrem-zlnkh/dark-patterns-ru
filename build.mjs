@@ -238,7 +238,7 @@ ${body}
   <div class="shell footer__inner">
     <div>
       <p class="footer__brand">Обманные паттерны</p>
-      <p class="footer__soft">Просветительский проект <a href="https://zelenykh.ru" target="_blank" rel="noopener">Зеленых Денис</a> о тёмных приёмах в дизайне интерфейсов. Материалы не являются юридической консультацией. Под редакцией <a href="https://t.me/lorrrem" target="_blank" rel="noopener">Lorrrem</a>.</p>
+      <p class="footer__soft">Просветительский проект <a href="https://zelenykh.ru" target="_blank" rel="noopener">Зеленых Дениса</a> о тёмных приёмах в дизайне интерфейсов. Материалы не являются юридической консультацией. Под редакцией <a href="https://t.me/lorrrem" target="_blank" rel="noopener">Lorrrem</a>.</p>
       <p class="footer__meta">Ростов-на-Дону, 2026</p>
     </div>
     <nav class="footer__nav">
