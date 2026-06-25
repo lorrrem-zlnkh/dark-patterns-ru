@@ -187,7 +187,7 @@ function layout({ title, description, body, active }) {
     `<a href="${u(href)}"${active === href ? ' class="is-active"' : ''}>${label}</a>`;
   const navPage = NAV_PAGE.map(link).join('');
   const navSections = NAV_SECTIONS.map(link).join('');
-  const navDrawer = [...NAV_SECTIONS, ...NAV_PAGE].map(link).join('');
+  const navDrawer = [...NAV_PAGE, ...NAV_SECTIONS].map(link).join('');
   return `<!doctype html>
 <html lang="ru">
 <head>
