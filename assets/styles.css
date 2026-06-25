@@ -176,7 +176,7 @@ hr { border: none; border-top: 1px solid hsl(var(--border)); margin: 2.5rem 0; }
 .link-more { font-size: .875rem; font-weight: 500; white-space: nowrap; color: hsl(var(--muted-foreground)); }
 .link-more:hover { color: hsl(var(--foreground)); }
 
-.sec__pills { list-style: none; margin: 0; padding: .5rem 0 0; display: flex; flex-wrap: wrap; gap: .5rem; align-content: start; }
+.sec__pills { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; align-content: start; }
 .sec__pills li {
   font-size: .875rem; font-weight: 500;
   background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground));
