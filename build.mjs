@@ -136,6 +136,39 @@ function mdToHtml(md) {
 }
 
 // ----- шаблон страницы -----
+// Авто-ссылки на законы и ведомства в секции «Что говорит закон РФ».
+// Линкуется первое упоминание каждого термина только внутри этой секции.
+const LAW_LINKS = [
+  ['Закон «О защите прав потребителей»', 'https://www.consultant.ru/document/cons_doc_LAW_305/'],
+  ['ЗоЗПП', 'https://www.consultant.ru/document/cons_doc_LAW_305/'],
+  ['152-ФЗ', 'https://www.consultant.ru/document/cons_doc_LAW_61801/'],
+  ['38-ФЗ', 'https://www.consultant.ru/document/cons_doc_LAW_58968/'],
+  ['353-ФЗ', 'https://www.consultant.ru/document/cons_doc_LAW_155986/'],
+  ['Роспотребнадзор', 'https://www.rospotrebnadzor.ru/'],
+  ['Роскомнадзор', 'https://rkn.gov.ru/'],
+  ['Роскачество', 'https://rskrf.ru/'],
+  ['ЦБ РФ', 'https://www.cbr.ru/'],
+  ['Банка России', 'https://www.cbr.ru/'],
+  ['Банк России', 'https://www.cbr.ru/'],
+  ['ФАС', 'https://fas.gov.ru/'],
+  ['МВД', 'https://xn--b1aew.xn--p1ai/'],
+];
+
+function linkLaws(body) {
+  const marker = '## Что говорит закон РФ';
+  const i = body.indexOf(marker);
+  if (i < 0) return body;
+  let end = body.indexOf('\n## ', i + marker.length);
+  if (end < 0) end = body.length;
+  let section = body.slice(i, end);
+  for (const [token, url] of LAW_LINKS) {
+    const idx = section.indexOf(token);
+    if (idx < 0) continue;
+    section = section.slice(0, idx) + `[${token}](${url})` + section.slice(idx + token.length);
+  }
+  return body.slice(0, i) + section + body.slice(end);
+}
+
 // Разделы сайта (отдельные страницы) — справа в навбаре
 const NAV_SECTIONS = [
   ['Каталог', '/patterns/'],
@@ -271,7 +304,7 @@ for (const p of patterns) {
       </div>
     </aside>
     <div class="prose">
-${mdToHtml(p.body.replace(/^#\s+.*\n/, ''))}
+${mdToHtml(linkLaws(p.body).replace(/^#\s+.*\n/, ''))}
     </div>
   </div>
 </article>`;
