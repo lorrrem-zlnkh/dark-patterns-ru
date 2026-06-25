@@ -291,28 +291,6 @@ const groups = MECHANISMS
 
 const sphereTag = s => `<span class="tag">${esc(s)}</span>`;
 
-// ----- страницы паттернов -----
-for (const p of patterns) {
-  const article = `
-<article class="prose-page">
-  <div class="shell prose-page__inner">
-    <aside class="prose-aside">
-      <a class="back" href="${u('/patterns/')}">← Все типы</a>
-      <div class="aside-block">
-        <p class="overline">Где встречается</p>
-        <div class="tags">${p.spheres.map(sphereTag).join('')}</div>
-      </div>
-    </aside>
-    <div class="prose">
-${mdToHtml(linkLaws(p.body).replace(/^#\s+.*\n/, ''))}
-    </div>
-  </div>
-</article>`;
-  writeFileSync(join(OUT, 'patterns', p.htmlSlug + '.html'),
-    layout({ title: `${p.title} — Обманные паттерны`, description: p.description, body: article, active: '/patterns/' }));
-}
-
-// ----- каталог -----
 // Английские эквиваленты терминов + ссылка на англ. Википедию.
 // По умолчанию — общая статья Deceptive pattern; где есть отдельная статья — она.
 const WIKI = 'https://en.wikipedia.org/wiki/Deceptive_pattern';
@@ -344,7 +322,34 @@ const EN = {
   'attention-capture': ['Attention capture', 'https://en.wikipedia.org/wiki/Attention_economy'],
   'scaremongering': ['Scareware', 'https://en.wikipedia.org/wiki/Scareware'],
 };
+const enBadge = (slug) => {
+  const e = EN[slug] || [];
+  if (!e[0]) return '';
+  return `<a class="card__en" href="${e[1] || WIKI}" target="_blank" rel="noopener" title="Англ. термин на Википедии">${esc(e[0])} ↗</a>`;
+};
 
+// ----- страницы паттернов -----
+for (const p of patterns) {
+  const article = `
+<article class="prose-page">
+  <div class="shell prose-page__inner">
+    <aside class="prose-aside">
+      <a class="back" href="${u('/patterns/')}">← Все типы</a>
+      <div class="aside-block">
+        <p class="overline">Где встречается</p>
+        <div class="tags">${p.spheres.map(sphereTag).join('')}</div>
+      </div>
+    </aside>
+    <div class="prose">
+${mdToHtml(linkLaws(p.body).replace(/^#\s+.*\n/, '')).replace('</h1>', '</h1>\n<p class="prose-en">' + enBadge(p.htmlSlug) + '</p>')}
+    </div>
+  </div>
+</article>`;
+  writeFileSync(join(OUT, 'patterns', p.htmlSlug + '.html'),
+    layout({ title: `${p.title} — Обманные паттерны`, description: p.description, body: article, active: '/patterns/' }));
+}
+
+// ----- каталог -----
 const card = p => {
   const e = EN[p.htmlSlug] || [];
   const enName = e[0];
