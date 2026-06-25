@@ -264,7 +264,6 @@ for (const p of patterns) {
   <div class="shell prose-page__inner">
     <aside class="prose-aside">
       <a class="back" href="${u('/patterns/')}">← Все типы</a>
-      <span class="pill">${esc(p.mechanism)}</span>
       <div class="aside-block">
         <p class="overline">Где встречается</p>
         <div class="tags">${p.spheres.map(sphereTag).join('')}</div>
@@ -478,7 +477,6 @@ for (const page of [
   <div class="shell prose-page__inner">
     <aside class="prose-aside">
       <a class="back" href="${u('/')}">← На главную</a>
-      <span class="pill">${page.aside}</span>
     </aside>
     <div class="prose">
 ${mdToHtml(body)}
