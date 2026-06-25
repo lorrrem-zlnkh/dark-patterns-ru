@@ -335,7 +335,7 @@ th { font-size: .8rem; font-weight: 600; color: hsl(var(--muted-foreground)); }
 @media (max-width: 860px) {
   .sec__grid { grid-template-columns: 1fr; }
   .about__inner { flex-direction: column; align-items: flex-start; }
-  .about__img { width: 100%; max-width: 320px; }
+  .about__img { width: 100%; max-width: 320px; margin-inline: auto; }
   .prose-page__inner { grid-template-columns: 1fr; }
   .prose-aside { position: static; flex-direction: row; align-items: center; flex-wrap: wrap; }
 }
