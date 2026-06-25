@@ -204,9 +204,9 @@ function layout({ title, description, body, active }) {
 <body>
 <header class="navbar">
   <div class="shell navbar__inner">
-    <a class="brand" href="${u('/')}">
-      <span class="brand__mark">!</span>
-      <span class="brand__name">Обманные<span class="brand__dot">.</span>паттерны</span>
+    <a class="brand" href="${u('/')}" aria-label="DTB — Обманные паттерны">
+      <img class="brand__logo brand__logo--light" src="${u('/assets/logo-dark.svg')}" alt="DTB — Обманные паттерны" height="28">
+      <img class="brand__logo brand__logo--dark" src="${u('/assets/logo-light.svg')}" alt="DTB — Обманные паттерны" height="28">
     </a>
     <div class="navbar__actions">
       <div class="nav-groups">
@@ -528,6 +528,8 @@ ${mdToHtml(body)}
 }
 
 cpSync(join(root, 'assets', 'styles.css'), join(OUT, 'assets', 'styles.css'));
+cpSync(join(root, 'assets', 'dtab dark.svg'), join(OUT, 'assets', 'logo-dark.svg'));
+cpSync(join(root, 'assets', 'dtab light.svg'), join(OUT, 'assets', 'logo-light.svg'));
 writeFileSync(join(OUT, '.nojekyll'), '');
 
 console.log(`Готово: ${patterns.length} паттернов, ${groups.length} групп → dist/ (BASE="${BASE || '/'}")`);
