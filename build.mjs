@@ -196,6 +196,8 @@ function layout({ title, description, body, active }) {
 <script>(function(){try{var t=localStorage.getItem('theme');var h=new Date().getHours();var d=t?t==='dark':(h<7||h>=19);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description || '')}">
+<link rel="icon" type="image/png" href="${u('/assets/favicon.png')}">
+<link rel="apple-touch-icon" href="${u('/assets/favicon.png')}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -532,6 +534,7 @@ cpSync(join(root, 'assets', 'styles.css'), join(OUT, 'assets', 'styles.css'));
 cpSync(join(root, 'assets', 'dtab dark.svg'), join(OUT, 'assets', 'logo-dark.svg'));
 cpSync(join(root, 'assets', 'dtab light.svg'), join(OUT, 'assets', 'logo-light.svg'));
 cpSync(join(root, 'assets', 'zelenykh jedy.png'), join(OUT, 'assets', 'zelenykh-jedy.png'));
+cpSync(join(root, 'assets', 'dtb icon.png'), join(OUT, 'assets', 'favicon.png'));
 writeFileSync(join(OUT, '.nojekyll'), '');
 
 console.log(`Готово: ${patterns.length} паттернов, ${groups.length} групп → dist/ (BASE="${BASE || '/'}")`);
