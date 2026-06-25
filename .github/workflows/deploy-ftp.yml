@@ -1,4 +1,4 @@
-name: Deploy to reg.ru (FTP)
+name: Prod — FTP deploy (reg.ru)
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: regru-ftp
+  group: ftp-prod
   cancel-in-progress: true
 
 jobs:
@@ -21,16 +21,17 @@ jobs:
         with:
           node-version: 20
 
-      # Сборка под корень поддомена (BASE_PATH не задаём → ссылки корневые)
+      # прод живёт в корне поддомена → BASE_PATH не задаём (ссылки корневые)
       - name: Build
         run: node build.mjs
 
-      - name: Deploy via FTP
+      - name: Deploy via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: 31.31.198.114
-          username: u1804763_dtb
-          password: ${{ secrets.REGRU_FTP_PASSWORD }}
-          # protocol: ftps   # раскомментировать, если reg.ru требует FTP over TLS
+          protocol: ftps
+          port: 21
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
           server-dir: /www/dtb.lorrrem.ru/
