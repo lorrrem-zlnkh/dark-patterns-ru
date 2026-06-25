@@ -36,7 +36,7 @@ const ORDER = [
   // Препятствия
   'obstruction', 'hard-to-cancel', 'comparison-prevention',
   // Давление
-  'fake-urgency', 'fake-scarcity', 'fake-social-proof', 'upselling',
+  'fake-urgency', 'fake-scarcity', 'fake-social-proof', 'upselling', 'scaremongering',
   // Принуждение
   'forced-action', 'nagging',
   // Подмена смысла
@@ -77,7 +77,7 @@ const fixHref = href =>
 
 function inline(text) {
   let t = esc(text);
-  t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => `<a href="${u(fixHref(href))}">${label}</a>`);
+  t = t.replace(/\[([^\]]+)\]\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g, (_, label, href) => `<a href="${u(fixHref(href))}">${label}</a>`);
   t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   t = t.replace(/(^|[\s(])\*([^*]+)\*/g, '$1<em>$2</em>');
   t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
@@ -136,23 +136,64 @@ function mdToHtml(md) {
 }
 
 // ----- шаблон страницы -----
-const NAV = [
-  ['Типы', '/patterns/'],
-  ['Где встречается', '/#spheres'],
+// Авто-ссылки на законы и ведомства в секции «Что говорит закон РФ».
+// Линкуется первое упоминание каждого термина только внутри этой секции.
+const LAW_LINKS = [
+  ['Закон «О защите прав потребителей»', 'https://www.consultant.ru/document/cons_doc_LAW_305/'],
+  ['ЗоЗПП', 'https://www.consultant.ru/document/cons_doc_LAW_305/'],
+  ['152-ФЗ', 'https://www.consultant.ru/document/cons_doc_LAW_61801/'],
+  ['38-ФЗ', 'https://www.consultant.ru/document/cons_doc_LAW_58968/'],
+  ['353-ФЗ', 'https://www.consultant.ru/document/cons_doc_LAW_155986/'],
+  ['Роспотребнадзор', 'https://www.rospotrebnadzor.ru/'],
+  ['Роскомнадзор', 'https://rkn.gov.ru/'],
+  ['Роскачество', 'https://rskrf.ru/'],
+  ['ЦБ РФ', 'https://www.cbr.ru/'],
+  ['Банка России', 'https://www.cbr.ru/'],
+  ['Банк России', 'https://www.cbr.ru/'],
+  ['ФАС', 'https://fas.gov.ru/'],
+  ['МВД', 'https://xn--b1aew.xn--p1ai/'],
+];
+
+function linkLaws(body) {
+  const marker = '## Что говорит закон РФ';
+  const i = body.indexOf(marker);
+  if (i < 0) return body;
+  let end = body.indexOf('\n## ', i + marker.length);
+  if (end < 0) end = body.length;
+  let section = body.slice(i, end);
+  for (const [token, url] of LAW_LINKS) {
+    const idx = section.indexOf(token);
+    if (idx < 0) continue;
+    section = section.slice(0, idx) + `[${token}](${url})` + section.slice(idx + token.length);
+  }
+  return body.slice(0, i) + section + body.slice(end);
+}
+
+// Разделы сайта (отдельные страницы) — справа в навбаре
+const NAV_SECTIONS = [
+  ['Каталог', '/patterns/'],
+  ['Этичный дизайн', '/ethics.html'],
+  ['Манифест', '/manifesto.html'],
+];
+// Навигация по странице (якоря главной) — слева от разделителя
+const NAV_PAGE = [
   ['Закон РФ', '/#laws'],
   ['Куда жаловаться', '/#help'],
   ['О проекте', '/#about'],
 ];
 
 function layout({ title, description, body, active }) {
-  const nav = NAV.map(([label, href]) =>
-    `<a href="${u(href)}"${active === href ? ' class="is-active"' : ''}>${label}</a>`).join('');
+  const link = ([label, href]) =>
+    `<a href="${u(href)}"${active === href ? ' class="is-active"' : ''}>${label}</a>`;
+  const navPage = NAV_PAGE.map(link).join('');
+  const navSections = NAV_SECTIONS.map(link).join('');
+  const navDrawer = [...NAV_PAGE, ...NAV_SECTIONS].map(link).join('');
   return `<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem('theme');var h=new Date().getHours();var d=t?t==='dark':(h<7||h>=19);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description || '')}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -163,17 +204,21 @@ function layout({ title, description, body, active }) {
 <body>
 <header class="navbar">
   <div class="shell navbar__inner">
-    <a class="brand" href="${u('/')}">
-      <span class="brand__mark">!</span>
-      <span class="brand__name">Обманные<span class="brand__dot">.</span>паттерны</span>
+    <a class="brand" href="${u('/')}" aria-label="DTB — Обманные паттерны">
+      <img class="brand__logo brand__logo--light" src="${u('/assets/logo-dark.svg')}" alt="DTB — Обманные паттерны" height="28">
+      <img class="brand__logo brand__logo--dark" src="${u('/assets/logo-light.svg')}" alt="DTB — Обманные паттерны" height="28">
     </a>
     <div class="navbar__actions">
-      <nav class="nav">${nav}</nav>
+      <div class="nav-groups">
+        <nav class="nav">${navPage}</nav>
+        <span class="nav-divider" aria-hidden="true"></span>
+        <nav class="nav nav--sections">${navSections}</nav>
+      </div>
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       </button>
-      <button class="nav-toggle" id="navToggle" aria-label="Открыть меню" aria-expanded="false">☰ Меню</button>
+      <button class="nav-toggle" id="navToggle" aria-label="Открыть меню" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Меню</button>
     </div>
   </div>
 </header>
@@ -181,7 +226,7 @@ function layout({ title, description, body, active }) {
   <div class="drawer__overlay" data-drawer-close></div>
   <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Меню">
     <div class="drawer__handle"></div>
-    <nav class="drawer__nav">${nav}</nav>
+    <nav class="drawer__nav">${navDrawer}</nav>
   </div>
 </div>
 <main>
@@ -191,7 +236,8 @@ ${body}
   <div class="shell footer__inner">
     <div>
       <p class="footer__brand">Обманные паттерны</p>
-      <p class="footer__soft">Просветительский проект о тёмных приёмах в дизайне интерфейсов на примере продуктов СНГ. Материалы не являются юридической консультацией.</p>
+      <p class="footer__soft">Просветительский проект <a href="https://zelenykh.ru" target="_blank" rel="noopener">Зеленых Денис</a> о тёмных приёмах в дизайне интерфейсов. Материалы не являются юридической консультацией. Под редакцией <a href="https://t.me/lorrrem" target="_blank" rel="noopener">Lorrrem</a>.</p>
+      <p class="footer__meta">Ростов-на-Дону, 2026</p>
     </div>
     <nav class="footer__nav">
       <a href="${u('/patterns/')}">Все типы</a>
@@ -245,6 +291,43 @@ const groups = MECHANISMS
 
 const sphereTag = s => `<span class="tag">${esc(s)}</span>`;
 
+// Английские эквиваленты терминов + ссылка на англ. Википедию.
+// По умолчанию — общая статья Deceptive pattern; где есть отдельная статья — она.
+const WIKI = 'https://en.wikipedia.org/wiki/Deceptive_pattern';
+const EN = {
+  'sneaking': ['Sneaking'],
+  'hidden-costs': ['Hidden costs'],
+  'hidden-subscription': ['Hidden subscription'],
+  'disguised-ads': ['Disguised ads'],
+  'obstruction': ['Obstruction'],
+  'hard-to-cancel': ['Roach motel'],
+  'comparison-prevention': ['Comparison prevention'],
+  'fake-urgency': ['Fake urgency'],
+  'fake-scarcity': ['Fake scarcity'],
+  'fake-social-proof': ['Fake social proof'],
+  'forced-action': ['Forced action'],
+  'nagging': ['Nagging'],
+  'trick-wording': ['Trick wording'],
+  'confirmshaming': ['Confirmshaming'],
+  'bait-and-switch': ['Bait and switch'],
+  'trick-questions': ['Trick questions'],
+  'email-push': ['Manipulative notifications'],
+  'visual-interference': ['Visual interference'],
+  'preselection': ['Preselection'],
+  'false-hierarchy': ['False hierarchy'],
+  'privacy-zuckering': ['Privacy zuckering'],
+  'friend-spam': ['Friend spam'],
+  'loot-boxes': ['Loot box', 'https://en.wikipedia.org/wiki/Loot_box'],
+  'virtual-currency': ['Virtual currency', 'https://en.wikipedia.org/wiki/Virtual_economy'],
+  'attention-capture': ['Attention capture', 'https://en.wikipedia.org/wiki/Attention_economy'],
+  'scaremongering': ['Scareware', 'https://en.wikipedia.org/wiki/Scareware'],
+};
+const enBadge = (slug) => {
+  const e = EN[slug] || [];
+  if (!e[0]) return '';
+  return `<a class="card__en" href="${e[1] || WIKI}" target="_blank" rel="noopener" title="Англ. термин на Википедии">${esc(e[0])} ↗</a>`;
+};
+
 // ----- страницы паттернов -----
 for (const p of patterns) {
   const article = `
@@ -252,14 +335,13 @@ for (const p of patterns) {
   <div class="shell prose-page__inner">
     <aside class="prose-aside">
       <a class="back" href="${u('/patterns/')}">← Все типы</a>
-      <span class="pill">${esc(p.mechanism)}</span>
       <div class="aside-block">
         <p class="overline">Где встречается</p>
         <div class="tags">${p.spheres.map(sphereTag).join('')}</div>
       </div>
     </aside>
     <div class="prose">
-${mdToHtml(p.body.replace(/^#\s+.*\n/, ''))}
+${mdToHtml(linkLaws(p.body).replace(/^#\s+.*\n/, '')).replace('</h1>', '</h1>\n<p class="prose-en">' + enBadge(p.htmlSlug) + '</p>')}
     </div>
   </div>
 </article>`;
@@ -268,12 +350,41 @@ ${mdToHtml(p.body.replace(/^#\s+.*\n/, ''))}
 }
 
 // ----- каталог -----
-const card = p => `<a class="card" href="${u('/patterns/' + p.htmlSlug + '.html')}">
-  <h3 class="card__title">${esc(p.title)}</h3>
-  <span class="card__mech">${esc(p.mechanism)}</span>
-  <p class="card__desc">${esc(p.description)}</p>
+const card = p => {
+  const e = EN[p.htmlSlug] || [];
+  const enName = e[0];
+  const enWiki = e[1] || WIKI;
+  return `<div class="card">
+  <a class="card__link" href="${u('/patterns/' + p.htmlSlug + '.html')}">
+    <h3 class="card__title">${esc(p.title)}</h3>
+    <p class="card__desc">${esc(p.description)}</p>
+  </a>
+  ${enName ? `<a class="card__en" href="${enWiki}" target="_blank" rel="noopener" title="Англ. термин на Википедии">${esc(enName)} ↗</a>` : ''}
   <div class="tags tags--card">${p.spheres.map(sphereTag).join('')}</div>
+</div>`;
+};
+
+// Материалы по теме (только рабочие ссылки)
+const MATERIALS = [
+  ['🎯', 'Тёмные паттерны: как уловки в дизайне обманывают пользователей', 'Что это, примеры крупных компаний и попытки регуляторов ограничить практику.', 'https://trends.rbc.ru/trends/industry/60feaaeb9a79473e32ca7b12'],
+  ['🧠', 'Тёмные паттерны в дизайне: что это такое', 'Основные типы приёмов, примеры и последствия для бизнеса.', 'https://qwer.agency/tpost/m6jxb7idb1-temnie-patterni-v-dizaine-chto-eto-takoe'],
+  ['⚠️', '14 тёмных паттернов, которых стоит избегать', 'Подробный разбор распространённых приёмов с примерами.', 'https://wybex.ru/tutorials/14-design-dark-patterns-youll-want-to-avoid/'],
+  ['🪤', 'Как тёмные UX-паттерны заставляют делать то, чего вы не хотите', 'Психологические уловки в интерфейсах и как их замечать.', 'https://say-hi.me/design/dark-ux.html'],
+  ['⚖️', 'От конверсии любой ценой — к этичному дизайну', 'Почему манипуляции вредят бизнесу и как проектировать честно.', 'https://blog.digimatix.ru/articles/ot-konversii-lyuboj-cenoj-k-etichnomu-dizajnu/'],
+  ['📚', 'Timeweb Community: статьи о дизайне и UX', 'Сообщество с материалами о дизайне, UX и тёмных паттернах.', 'https://timeweb.com/ru/community/'],
+  ['🎓', 'What are dark patterns in UX? All you need to know', 'Гайд по тёмным паттернам и этичному дизайну (на англ.).', 'https://www.uxdesigninstitute.com/blog/what-are-dark-patterns-in-ux/'],
+  ['🎨', 'Dark Patterns in UX', 'Как распознавать и избегать тёмных паттернов (на англ.).', 'https://adamfard.com/blog/dark-patterns-ux'],
+];
+
+const matCard = ([emoji, title, desc, href]) => {
+  const host = href.replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '');
+  return `<a class="card card--mat" href="${href}" target="_blank" rel="noopener">
+  <span class="card__emoji">${emoji}</span>
+  <h3 class="card__title">${esc(title)}</h3>
+  <p class="card__desc">${esc(desc)}</p>
+  <span class="card__src">${esc(host)} ↗</span>
 </a>`;
+};
 
 const catBody = `
 <section class="page-head">
@@ -301,9 +412,8 @@ const homeBody = `
 <section class="hero">
   <div class="shell">
     <div class="hero__banner">
-      <span class="eyebrow">разбираем тёмные приёмы интерфейсов на примере СНГ</span>
-      <h1 class="hero__title">Обманные паттерны заставляют людей делать то, чего они не хотели.</h1>
-      <p class="hero__lead">Это не просто «неудобный дизайн». Это намеренно выстроенные ловушки в сайтах и приложениях, которые используют психологию против вас — чтобы вы купили лишнее, отдали данные или подписались, сами того не желая.</p>
+      <h1 class="hero__title">DTB — каталог-исследование обманчивых паттернов</h1>
+      <p class="hero__lead">Эти паттерны — не просто «неудобный дизайн». Это намеренно выстроенные ловушки на сайтах и в приложениях, которые используют психологию против вас.</p>
       <div class="hero__cta">
         <a class="btn btn--primary" href="${u('/patterns/')}">Смотреть все ${patterns.length} типов</a>
         <a class="btn btn--ghost" href="#what">Что это такое</a>
@@ -313,16 +423,18 @@ const homeBody = `
 </section>
 
 <section class="sec" id="what">
-  <div class="shell sec__grid">
+  <div class="shell">
+    <h2>Что такое обманные паттерны?</h2>
+    <div class="sec__grid">
     <div class="sec__col">
-      <h2>Что такое обманные паттерны?</h2>
       <p>Обманные паттерны (англ. <em>deceptive patterns</em>, ранее — <em>dark patterns</em>) — это приёмы в дизайне, которые подталкивают человека к действиям, которых он не планировал: оформить подписку, купить ненужное, отдать больше личных данных.</p>
-      <p>Они эксплуатируют особенности восприятия: невнимательность, спешку, доверие к умолчаниям и страх упустить выгоду.</p>
+      <p>Они эксплуатируют особенности восприятия: невнимательность, спешку, доверие к умолчаниям и страх упустить выгоду. В рамках проекта <em>Darker than black</em> (Темнее чёрного) мы разбираемся, как не стать жертвой таких хитростей, а также рассказываем дизайнерам, когда дизайн для повышения конверсий превращается в откровенную манипуляцию.</p>
     </div>
     <ul class="sec__pills">
       <li>🛒 Подсовывание</li><li>💬 Обманчивые формулировки</li><li>🚧 Препятствование</li>
       <li>⏰ Ложная срочность</li><li>💸 Скрытые расходы</li><li>☑️ Предвыбор</li>
     </ul>
+    </div>
   </div>
 </section>
 
@@ -352,7 +464,7 @@ const homeBody = `
     </div>
     <div class="sec__col">
       <p class="overline">Основные нормы</p>
-      <p>Закон «О защите прав потребителей» (ст. 10, 16), 152-ФЗ «О персональных данных» (ст. 9), 38-ФЗ «О рекламе» (ст. 5, 18).</p>
+      <p><a href="https://www.consultant.ru/document/cons_doc_LAW_305/" target="_blank" rel="noopener">Закон «О защите прав потребителей»</a> (ст. 10, 16), <a href="https://www.consultant.ru/document/cons_doc_LAW_61801/" target="_blank" rel="noopener">152-ФЗ «О персональных данных»</a> (ст. 9), <a href="https://www.consultant.ru/document/cons_doc_LAW_58968/" target="_blank" rel="noopener">38-ФЗ «О рекламе»</a> (ст. 5, 18).</p>
       <p class="overline">Что под запретом</p>
       <p>Навязывание услуг, недостоверная цена и реклама, согласия «по умолчанию», скрытые подписки и непрозрачная отмена.</p>
     </div>
@@ -364,27 +476,62 @@ const homeBody = `
     <h2>Куда жаловаться</h2>
     <p class="lead">Если вы столкнулись с обманным приёмом, защитить права помогут профильные ведомства.</p>
     <div class="stats">
-      <div class="stat"><span class="stat__num">Роспотреб­надзор</span><span class="stat__lbl">навязывание услуг, недостоверная информация, права потребителя</span></div>
-      <div class="stat"><span class="stat__num">ФАС</span><span class="stat__lbl">недобросовестная и недостоверная реклама, спам</span></div>
-      <div class="stat"><span class="stat__num">ЦБ РФ</span><span class="stat__lbl">мисселинг и навязывание финансовых услуг и подписок</span></div>
-      <div class="stat"><span class="stat__num">Роскомнадзор</span><span class="stat__lbl">нарушения при обработке персональных данных</span></div>
+      <a class="stat" href="https://www.rospotrebnadzor.ru/" target="_blank" rel="noopener"><span class="stat__num">Роспотреб­надзор ↗</span><span class="stat__lbl">навязывание услуг, недостоверная информация, права потребителя</span></a>
+      <a class="stat" href="https://fas.gov.ru/" target="_blank" rel="noopener"><span class="stat__num">ФАС ↗</span><span class="stat__lbl">недобросовестная и недостоверная реклама, спам</span></a>
+      <a class="stat" href="https://www.cbr.ru/reception/" target="_blank" rel="noopener"><span class="stat__num">ЦБ РФ ↗</span><span class="stat__lbl">мисселинг и навязывание финансовых услуг и подписок</span></a>
+      <a class="stat" href="https://rkn.gov.ru/" target="_blank" rel="noopener"><span class="stat__num">Роскомнадзор ↗</span><span class="stat__lbl">нарушения при обработке персональных данных</span></a>
     </div>
   </div>
 </section>
 
-<section class="sec sec--about" id="about">
+<section class="sec" id="materials">
   <div class="shell">
+    <div class="sec__head">
+      <h2>Материалы по теме</h2>
+    </div>
+    <p class="lead lead--wide">Подборка статей о тёмных паттернах и этичном дизайне — на русском и английском.</p>
+    <div class="grid grid--mat">${MATERIALS.map(matCard).join('')}</div>
+  </div>
+</section>
+
+<section class="sec sec--about" id="about">
+  <div class="shell about__inner">
     <div class="sec__narrow">
       <h2>О проекте</h2>
-      <p>Мы собираем и разбираем обманные паттерны на русском языке и на примере продуктов СНГ, чтобы пользователи научились их замечать, а дизайнеры и продакты — отказываться от тёмных практик. Примеры приводятся по открытым источникам и описывают распространённые практики, а не доказанные нарушения конкретных компаний.</p>
+      <p>Мы собираем и разбираем обманные паттерны, чтобы пользователи научились их замечать, а дизайнеры и продакты — отказываться от тёмных практик. Примеры приводятся по открытым источникам и описывают распространённые практики, а не доказанные нарушения конкретных компаний.</p>
       <a class="btn btn--primary" href="${u('/patterns/')}">Изучить каталог</a>
     </div>
+    <img class="about__img" src="${u('/assets/zelenykh-jedy.png')}" alt="" loading="lazy" width="1024" height="1024">
   </div>
 </section>`;
 writeFileSync(join(OUT, 'index.html'),
   layout({ title: 'Обманные паттерны интерфейсов', description: 'Каталог обманных паттернов (dark patterns) на русском языке на примере продуктов СНГ.', body: homeBody, active: '/' }));
 
+// ----- отдельные страницы (Этичный дизайн, Манифест) -----
+for (const page of [
+  { file: 'ethics.md', out: 'ethics.html', aside: 'Материалы' },
+  { file: 'manifesto.md', out: 'manifesto.html', aside: 'Манифест' },
+]) {
+  const { data, body } = parseFrontmatter(readFileSync(join(SRC, page.file), 'utf8'));
+  const docBody = `
+<article class="prose-page">
+  <div class="shell prose-page__inner">
+    <aside class="prose-aside">
+      <a class="back" href="${u('/')}">← На главную</a>
+    </aside>
+    <div class="prose">
+${mdToHtml(body)}
+    </div>
+  </div>
+</article>`;
+  writeFileSync(join(OUT, page.out),
+    layout({ title: `${data.title} — Обманные паттерны`, description: data.description, body: docBody, active: '/' + page.out }));
+}
+
 cpSync(join(root, 'assets', 'styles.css'), join(OUT, 'assets', 'styles.css'));
+cpSync(join(root, 'assets', 'dtab dark.svg'), join(OUT, 'assets', 'logo-dark.svg'));
+cpSync(join(root, 'assets', 'dtab light.svg'), join(OUT, 'assets', 'logo-light.svg'));
+cpSync(join(root, 'assets', 'zelenykh jedy.png'), join(OUT, 'assets', 'zelenykh-jedy.png'));
 writeFileSync(join(OUT, '.nojekyll'), '');
 
 console.log(`Готово: ${patterns.length} паттернов, ${groups.length} групп → dist/ (BASE="${BASE || '/'}")`);
