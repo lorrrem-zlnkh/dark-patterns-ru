@@ -136,18 +136,25 @@ function mdToHtml(md) {
 }
 
 // ----- шаблон страницы -----
-const NAV = [
-  ['Типы', '/patterns/'],
+// Разделы сайта (отдельные страницы) — справа в навбаре
+const NAV_SECTIONS = [
+  ['Каталог', '/patterns/'],
   ['Этичный дизайн', '/ethics.html'],
   ['Манифест', '/manifesto.html'],
+];
+// Навигация по странице (якоря главной) — слева от разделителя
+const NAV_PAGE = [
   ['Закон РФ', '/#laws'],
   ['Куда жаловаться', '/#help'],
   ['О проекте', '/#about'],
 ];
 
 function layout({ title, description, body, active }) {
-  const nav = NAV.map(([label, href]) =>
-    `<a href="${u(href)}"${active === href ? ' class="is-active"' : ''}>${label}</a>`).join('');
+  const link = ([label, href]) =>
+    `<a href="${u(href)}"${active === href ? ' class="is-active"' : ''}>${label}</a>`;
+  const navPage = NAV_PAGE.map(link).join('');
+  const navSections = NAV_SECTIONS.map(link).join('');
+  const navDrawer = [...NAV_SECTIONS, ...NAV_PAGE].map(link).join('');
   return `<!doctype html>
 <html lang="ru">
 <head>
@@ -169,7 +176,11 @@ function layout({ title, description, body, active }) {
       <span class="brand__name">Обманные<span class="brand__dot">.</span>паттерны</span>
     </a>
     <div class="navbar__actions">
-      <nav class="nav">${nav}</nav>
+      <div class="nav-groups">
+        <nav class="nav">${navPage}</nav>
+        <span class="nav-divider" aria-hidden="true"></span>
+        <nav class="nav nav--sections">${navSections}</nav>
+      </div>
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -182,7 +193,7 @@ function layout({ title, description, body, active }) {
   <div class="drawer__overlay" data-drawer-close></div>
   <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Меню">
     <div class="drawer__handle"></div>
-    <nav class="drawer__nav">${nav}</nav>
+    <nav class="drawer__nav">${navDrawer}</nav>
   </div>
 </div>
 <main>
@@ -308,7 +319,6 @@ const card = p => {
   return `<div class="card">
   <a class="card__link" href="${u('/patterns/' + p.htmlSlug + '.html')}">
     <h3 class="card__title">${esc(p.title)}</h3>
-    <span class="card__mech">${esc(p.mechanism)}</span>
     <p class="card__desc">${esc(p.description)}</p>
   </a>
   ${enName ? `<a class="card__en" href="${enWiki}" target="_blank" rel="noopener" title="Англ. термин на Википедии">${esc(enName)} ↗</a>` : ''}
