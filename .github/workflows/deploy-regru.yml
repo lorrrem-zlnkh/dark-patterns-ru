@@ -1,0 +1,36 @@
+name: Deploy to reg.ru (FTP)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: regru-ftp
+  cancel-in-progress: true
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Сборка под корень поддомена (BASE_PATH не задаём → ссылки корневые)
+      - name: Build
+        run: node build.mjs
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: 31.31.198.114
+          username: u1804763_dtb
+          password: ${{ secrets.REGRU_FTP_PASSWORD }}
+          # protocol: ftps   # раскомментировать, если reg.ru требует FTP over TLS
+          local-dir: ./dist/
+          server-dir: /www/dtb.lorrrem.ru/
