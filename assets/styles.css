@@ -275,6 +275,9 @@ a.stat:hover { border-color: hsl(var(--foreground) / .3); transform: translateY(
 .sec--about p { color: rgba(255, 255, 255, .75); }
 .sec--about .btn--primary { background: #fff; color: hsl(240 10% 3.9%); }
 .sec--about .btn--primary:hover { opacity: .9; color: hsl(240 10% 3.9%); }
+.about__inner { display: flex; align-items: center; justify-content: space-between; gap: clamp(1.5rem, 4vw, 3rem); }
+.about__inner .sec__narrow { flex: 1 1 auto; }
+.about__img { flex: 0 0 auto; width: clamp(220px, 34%, 420px); height: auto; opacity: .6; border-radius: var(--radius); }
 
 /* ---------- статья ---------- */
 .prose-page { padding: clamp(2.5rem, 4vw, 4rem) 0 clamp(3rem, 5vw, 5rem); }
@@ -331,6 +334,8 @@ th { font-size: .8rem; font-weight: 600; color: hsl(var(--muted-foreground)); }
 /* ---------- адаптив ---------- */
 @media (max-width: 860px) {
   .sec__grid { grid-template-columns: 1fr; }
+  .about__inner { flex-direction: column; align-items: flex-start; }
+  .about__img { width: 100%; max-width: 320px; }
   .prose-page__inner { grid-template-columns: 1fr; }
   .prose-aside { position: static; flex-direction: row; align-items: center; flex-wrap: wrap; }
 }

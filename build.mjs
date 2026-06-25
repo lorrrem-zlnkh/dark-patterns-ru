@@ -495,12 +495,13 @@ const homeBody = `
 </section>
 
 <section class="sec sec--about" id="about">
-  <div class="shell">
+  <div class="shell about__inner">
     <div class="sec__narrow">
       <h2>О проекте</h2>
       <p>Мы собираем и разбираем обманные паттерны, чтобы пользователи научились их замечать, а дизайнеры и продакты — отказываться от тёмных практик. Примеры приводятся по открытым источникам и описывают распространённые практики, а не доказанные нарушения конкретных компаний.</p>
       <a class="btn btn--primary" href="${u('/patterns/')}">Изучить каталог</a>
     </div>
+    <img class="about__img" src="${u('/assets/zelenykh-jedy.png')}" alt="" loading="lazy" width="1024" height="1024">
   </div>
 </section>`;
 writeFileSync(join(OUT, 'index.html'),
@@ -530,6 +531,7 @@ ${mdToHtml(body)}
 cpSync(join(root, 'assets', 'styles.css'), join(OUT, 'assets', 'styles.css'));
 cpSync(join(root, 'assets', 'dtab dark.svg'), join(OUT, 'assets', 'logo-dark.svg'));
 cpSync(join(root, 'assets', 'dtab light.svg'), join(OUT, 'assets', 'logo-light.svg'));
+cpSync(join(root, 'assets', 'zelenykh jedy.png'), join(OUT, 'assets', 'zelenykh-jedy.png'));
 writeFileSync(join(OUT, '.nojekyll'), '');
 
 console.log(`Готово: ${patterns.length} паттернов, ${groups.length} групп → dist/ (BASE="${BASE || '/'}")`);
