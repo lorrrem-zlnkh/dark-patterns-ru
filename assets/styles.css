@@ -340,7 +340,8 @@ th { font-size: .8rem; font-weight: 600; color: hsl(var(--muted-foreground)); }
   .prose-aside { position: static; flex-direction: row; align-items: center; flex-wrap: wrap; }
 }
 @media (max-width: 640px) {
-  :root { --shell-pad: 8px; }
+  :root { --shell-pad: 12px; }
+  .hero__banner { padding: 16px; }
   .hero__cta { flex-direction: column; align-items: stretch; }
   .hero__cta .btn { width: 100%; }
   .nav-groups { display: none; }

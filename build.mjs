@@ -193,7 +193,7 @@ function layout({ title, description, body, active }) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem('theme');var h=new Date().getHours();var d=t?t==='dark':(h<7||h>=19);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description || '')}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
