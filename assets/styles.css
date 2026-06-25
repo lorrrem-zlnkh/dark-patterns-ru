@@ -93,6 +93,7 @@ hr { border: none; border-top: 1px solid hsl(var(--border)); margin: 2.5rem 0; }
   margin-bottom: .4rem;
 }
 .lead { font-size: 1.125rem; color: hsl(var(--muted-foreground)); max-width: 60ch; }
+.lead--wide { max-width: none; }
 
 /* ---------- навбар ---------- */
 .navbar {
@@ -299,7 +300,8 @@ th { font-size: .8rem; font-weight: 600; color: hsl(var(--muted-foreground)); }
 .footer { border-top: 1px solid hsl(var(--border)); padding: clamp(2.5rem, 4vw, 3.5rem) 0; }
 .footer__inner { display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
 .footer__brand { font-weight: 600; font-size: 1rem; margin: 0 0 .4rem; }
-.footer__soft { max-width: 42ch; font-size: .875rem; color: hsl(var(--muted-foreground)); margin: 0; }
+.footer__soft { max-width: 48ch; font-size: .875rem; color: hsl(var(--muted-foreground)); margin: 0; }
+.footer__meta { font-size: .8rem; color: hsl(var(--muted-foreground)); margin: .75rem 0 0; }
 .footer__nav { display: flex; flex-direction: column; gap: .5rem; font-size: .875rem; }
 .footer__nav a { color: hsl(var(--muted-foreground)); text-decoration: none; }
 .footer__nav a:hover { color: hsl(var(--foreground)); }
