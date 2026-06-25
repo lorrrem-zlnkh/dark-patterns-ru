@@ -326,6 +326,28 @@ const card = p => {
 </div>`;
 };
 
+// Материалы по теме (только рабочие ссылки)
+const MATERIALS = [
+  ['🎯', 'Тёмные паттерны: как уловки в дизайне обманывают пользователей', 'Что это, примеры крупных компаний и попытки регуляторов ограничить практику.', 'https://trends.rbc.ru/trends/industry/60feaaeb9a79473e32ca7b12'],
+  ['🧠', 'Тёмные паттерны в дизайне: что это такое', 'Основные типы приёмов, примеры и последствия для бизнеса.', 'https://qwer.agency/tpost/m6jxb7idb1-temnie-patterni-v-dizaine-chto-eto-takoe'],
+  ['⚠️', '14 тёмных паттернов, которых стоит избегать', 'Подробный разбор распространённых приёмов с примерами.', 'https://wybex.ru/tutorials/14-design-dark-patterns-youll-want-to-avoid/'],
+  ['🪤', 'Как тёмные UX-паттерны заставляют делать то, чего вы не хотите', 'Психологические уловки в интерфейсах и как их замечать.', 'https://say-hi.me/design/dark-ux.html'],
+  ['⚖️', 'От конверсии любой ценой — к этичному дизайну', 'Почему манипуляции вредят бизнесу и как проектировать честно.', 'https://blog.digimatix.ru/articles/ot-konversii-lyuboj-cenoj-k-etichnomu-dizajnu/'],
+  ['📚', 'Timeweb Community: статьи о дизайне и UX', 'Сообщество с материалами о дизайне, UX и тёмных паттернах.', 'https://timeweb.com/ru/community/'],
+  ['🎓', 'What are dark patterns in UX? All you need to know', 'Гайд по тёмным паттернам и этичному дизайну (на англ.).', 'https://www.uxdesigninstitute.com/blog/what-are-dark-patterns-in-ux/'],
+  ['🎨', 'Dark Patterns in UX', 'Как распознавать и избегать тёмных паттернов (на англ.).', 'https://adamfard.com/blog/dark-patterns-ux'],
+];
+
+const matCard = ([emoji, title, desc, href]) => {
+  const host = href.replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '');
+  return `<a class="card card--mat" href="${href}" target="_blank" rel="noopener">
+  <span class="card__emoji">${emoji}</span>
+  <h3 class="card__title">${esc(title)}</h3>
+  <p class="card__desc">${esc(desc)}</p>
+  <span class="card__src">${esc(host)} ↗</span>
+</a>`;
+};
+
 const catBody = `
 <section class="page-head">
   <div class="shell">
@@ -415,11 +437,21 @@ const homeBody = `
     <h2>Куда жаловаться</h2>
     <p class="lead">Если вы столкнулись с обманным приёмом, защитить права помогут профильные ведомства.</p>
     <div class="stats">
-      <div class="stat"><span class="stat__num">Роспотреб­надзор</span><span class="stat__lbl">навязывание услуг, недостоверная информация, права потребителя</span></div>
-      <div class="stat"><span class="stat__num">ФАС</span><span class="stat__lbl">недобросовестная и недостоверная реклама, спам</span></div>
-      <div class="stat"><span class="stat__num">ЦБ РФ</span><span class="stat__lbl">мисселинг и навязывание финансовых услуг и подписок</span></div>
-      <div class="stat"><span class="stat__num">Роскомнадзор</span><span class="stat__lbl">нарушения при обработке персональных данных</span></div>
+      <a class="stat" href="https://www.rospotrebnadzor.ru/" target="_blank" rel="noopener"><span class="stat__num">Роспотреб­надзор ↗</span><span class="stat__lbl">навязывание услуг, недостоверная информация, права потребителя</span></a>
+      <a class="stat" href="https://fas.gov.ru/" target="_blank" rel="noopener"><span class="stat__num">ФАС ↗</span><span class="stat__lbl">недобросовестная и недостоверная реклама, спам</span></a>
+      <a class="stat" href="https://www.cbr.ru/reception/" target="_blank" rel="noopener"><span class="stat__num">ЦБ РФ ↗</span><span class="stat__lbl">мисселинг и навязывание финансовых услуг и подписок</span></a>
+      <a class="stat" href="https://rkn.gov.ru/" target="_blank" rel="noopener"><span class="stat__num">Роскомнадзор ↗</span><span class="stat__lbl">нарушения при обработке персональных данных</span></a>
     </div>
+  </div>
+</section>
+
+<section class="sec" id="materials">
+  <div class="shell">
+    <div class="sec__head">
+      <h2>Материалы по теме</h2>
+    </div>
+    <p class="lead">Подборка статей о тёмных паттернах и этичном дизайне — на русском и английском.</p>
+    <div class="grid grid--mat">${MATERIALS.map(matCard).join('')}</div>
   </div>
 </section>
 

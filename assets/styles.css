@@ -212,6 +212,10 @@ hr { border: none; border-top: 1px solid hsl(var(--border)); margin: 2.5rem 0; }
   border: 1px dashed hsl(var(--border)); border-radius: 9999px; padding: .2rem .6rem;
 }
 .card__en:hover { color: hsl(var(--foreground)); border-color: hsl(var(--foreground) / .4); text-decoration: none; }
+.card--mat { text-decoration: none; color: inherit; }
+.card--mat:hover { text-decoration: none; }
+.card__emoji { font-size: 1.6rem; line-height: 1; }
+.card__src { margin-top: auto; padding-top: .4rem; font-size: .78rem; font-family: var(--font-mono); color: hsl(var(--muted-foreground)); }
 .card__more { font-size: .875rem; font-weight: 500; color: hsl(var(--foreground)); margin-top: auto; }
 
 /* ---------- бейджи (shadcn badge) ---------- */
@@ -245,6 +249,8 @@ hr { border: none; border-top: 1px solid hsl(var(--border)); margin: 2.5rem 0; }
 /* ---------- статистика / «куда жаловаться» ---------- */
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; margin-top: 1.75rem; }
 .stat { border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); padding: 1.25rem; }
+a.stat { text-decoration: none; color: inherit; transition: border-color .15s, box-shadow .15s, transform .15s; }
+a.stat:hover { border-color: hsl(var(--foreground) / .3); transform: translateY(-2px); box-shadow: 0 4px 16px -2px hsl(var(--foreground) / .08); text-decoration: none; }
 .stat__num { display: block; font-size: 1.05rem; font-weight: 700; letter-spacing: -.01em; color: hsl(var(--foreground)); line-height: 1.2; }
 .stat__lbl { display: block; font-size: .875rem; color: hsl(var(--muted-foreground)); margin-top: .4rem; }
 
