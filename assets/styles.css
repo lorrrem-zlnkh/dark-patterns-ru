@@ -197,10 +197,19 @@ hr { border: none; border-top: 1px solid hsl(var(--border)); margin: 2.5rem 0; }
   box-shadow: 0 1px 2px 0 hsl(var(--foreground) / .04);
   transition: box-shadow .15s, transform .15s, border-color .15s;
 }
-.card:hover { box-shadow: 0 4px 16px -2px hsl(var(--foreground) / .08); border-color: hsl(var(--foreground) / .25); text-decoration: none; transform: translateY(-2px); }
+.card:hover { box-shadow: 0 4px 16px -2px hsl(var(--foreground) / .08); border-color: hsl(var(--foreground) / .25); transform: translateY(-2px); }
+.card__link { display: flex; flex-direction: column; gap: .5rem; flex: 1; text-decoration: none; color: inherit; }
+.card__link:hover { text-decoration: none; }
 .card__title { font-size: 1.05rem; font-weight: 600; letter-spacing: -.01em; color: hsl(var(--card-foreground)); margin: 0; }
 .card__mech { font-size: .8rem; font-weight: 500; color: hsl(var(--muted-foreground)); margin: -.25rem 0 0; }
 .card__desc { font-size: .9rem; color: hsl(var(--muted-foreground)); margin: 0; }
+.card__en {
+  align-self: flex-start;
+  font-size: .75rem; font-weight: 500; font-family: var(--font-mono);
+  color: hsl(var(--muted-foreground)); text-decoration: none;
+  border: 1px dashed hsl(var(--border)); border-radius: 9999px; padding: .2rem .6rem;
+}
+.card__en:hover { color: hsl(var(--foreground)); border-color: hsl(var(--foreground) / .4); text-decoration: none; }
 .card__more { font-size: .875rem; font-weight: 500; color: hsl(var(--foreground)); margin-top: auto; }
 
 /* ---------- бейджи (shadcn badge) ---------- */

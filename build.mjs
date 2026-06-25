@@ -77,7 +77,7 @@ const fixHref = href =>
 
 function inline(text) {
   let t = esc(text);
-  t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => `<a href="${u(fixHref(href))}">${label}</a>`);
+  t = t.replace(/\[([^\]]+)\]\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g, (_, label, href) => `<a href="${u(fixHref(href))}">${label}</a>`);
   t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   t = t.replace(/(^|[\s(])\*([^*]+)\*/g, '$1<em>$2</em>');
   t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
@@ -138,8 +138,8 @@ function mdToHtml(md) {
 // ----- шаблон страницы -----
 const NAV = [
   ['Типы', '/patterns/'],
-  ['Где встречается', '/#spheres'],
   ['Этичный дизайн', '/ethics.html'],
+  ['Манифест', '/manifesto.html'],
   ['Закон РФ', '/#laws'],
   ['Куда жаловаться', '/#help'],
   ['О проекте', '/#about'],
@@ -269,12 +269,52 @@ ${mdToHtml(p.body.replace(/^#\s+.*\n/, ''))}
 }
 
 // ----- каталог -----
-const card = p => `<a class="card" href="${u('/patterns/' + p.htmlSlug + '.html')}">
-  <h3 class="card__title">${esc(p.title)}</h3>
-  <span class="card__mech">${esc(p.mechanism)}</span>
-  <p class="card__desc">${esc(p.description)}</p>
+// Английские эквиваленты терминов + ссылка на англ. Википедию.
+// По умолчанию — общая статья Deceptive pattern; где есть отдельная статья — она.
+const WIKI = 'https://en.wikipedia.org/wiki/Deceptive_pattern';
+const EN = {
+  'sneaking': ['Sneaking'],
+  'hidden-costs': ['Hidden costs'],
+  'hidden-subscription': ['Hidden subscription'],
+  'disguised-ads': ['Disguised ads'],
+  'obstruction': ['Obstruction'],
+  'hard-to-cancel': ['Roach motel'],
+  'comparison-prevention': ['Comparison prevention'],
+  'fake-urgency': ['Fake urgency'],
+  'fake-scarcity': ['Fake scarcity'],
+  'fake-social-proof': ['Fake social proof'],
+  'forced-action': ['Forced action'],
+  'nagging': ['Nagging'],
+  'trick-wording': ['Trick wording'],
+  'confirmshaming': ['Confirmshaming'],
+  'bait-and-switch': ['Bait and switch'],
+  'trick-questions': ['Trick questions'],
+  'email-push': ['Manipulative notifications'],
+  'visual-interference': ['Visual interference'],
+  'preselection': ['Preselection'],
+  'false-hierarchy': ['False hierarchy'],
+  'privacy-zuckering': ['Privacy zuckering'],
+  'friend-spam': ['Friend spam'],
+  'loot-boxes': ['Loot box', 'https://en.wikipedia.org/wiki/Loot_box'],
+  'virtual-currency': ['Virtual currency', 'https://en.wikipedia.org/wiki/Virtual_economy'],
+  'attention-capture': ['Attention capture', 'https://en.wikipedia.org/wiki/Attention_economy'],
+  'scaremongering': ['Scareware', 'https://en.wikipedia.org/wiki/Scareware'],
+};
+
+const card = p => {
+  const e = EN[p.htmlSlug] || [];
+  const enName = e[0];
+  const enWiki = e[1] || WIKI;
+  return `<div class="card">
+  <a class="card__link" href="${u('/patterns/' + p.htmlSlug + '.html')}">
+    <h3 class="card__title">${esc(p.title)}</h3>
+    <span class="card__mech">${esc(p.mechanism)}</span>
+    <p class="card__desc">${esc(p.description)}</p>
+  </a>
+  ${enName ? `<a class="card__en" href="${enWiki}" target="_blank" rel="noopener" title="Англ. термин на Википедии">${esc(enName)} ↗</a>` : ''}
   <div class="tags tags--card">${p.spheres.map(sphereTag).join('')}</div>
-</a>`;
+</div>`;
+};
 
 const catBody = `
 <section class="page-head">
@@ -385,23 +425,26 @@ const homeBody = `
 writeFileSync(join(OUT, 'index.html'),
   layout({ title: 'Обманные паттерны интерфейсов', description: 'Каталог обманных паттернов (dark patterns) на русском языке на примере продуктов СНГ.', body: homeBody, active: '/' }));
 
-// ----- отдельная страница «Этичный дизайн» -----
-{
-  const { data, body } = parseFrontmatter(readFileSync(join(SRC, 'ethics.md'), 'utf8'));
-  const ethicsBody = `
+// ----- отдельные страницы (Этичный дизайн, Манифест) -----
+for (const page of [
+  { file: 'ethics.md', out: 'ethics.html', aside: 'Материалы' },
+  { file: 'manifesto.md', out: 'manifesto.html', aside: 'Манифест' },
+]) {
+  const { data, body } = parseFrontmatter(readFileSync(join(SRC, page.file), 'utf8'));
+  const docBody = `
 <article class="prose-page">
   <div class="shell prose-page__inner">
     <aside class="prose-aside">
       <a class="back" href="${u('/')}">← На главную</a>
-      <span class="pill">Материалы</span>
+      <span class="pill">${page.aside}</span>
     </aside>
     <div class="prose">
 ${mdToHtml(body)}
     </div>
   </div>
 </article>`;
-  writeFileSync(join(OUT, 'ethics.html'),
-    layout({ title: `${data.title} — Обманные паттерны`, description: data.description, body: ethicsBody, active: '/ethics.html' }));
+  writeFileSync(join(OUT, page.out),
+    layout({ title: `${data.title} — Обманные паттерны`, description: data.description, body: docBody, active: '/' + page.out }));
 }
 
 cpSync(join(root, 'assets', 'styles.css'), join(OUT, 'assets', 'styles.css'));
