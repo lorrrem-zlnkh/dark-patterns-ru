@@ -36,7 +36,7 @@ const ORDER = [
   // Препятствия
   'obstruction', 'hard-to-cancel', 'comparison-prevention',
   // Давление
-  'fake-urgency', 'fake-scarcity', 'fake-social-proof', 'upselling',
+  'fake-urgency', 'fake-scarcity', 'fake-social-proof', 'upselling', 'scaremongering',
   // Принуждение
   'forced-action', 'nagging',
   // Подмена смысла
@@ -139,6 +139,7 @@ function mdToHtml(md) {
 const NAV = [
   ['Типы', '/patterns/'],
   ['Где встречается', '/#spheres'],
+  ['Этичный дизайн', '/ethics.html'],
   ['Закон РФ', '/#laws'],
   ['Куда жаловаться', '/#help'],
   ['О проекте', '/#about'],
@@ -383,6 +384,25 @@ const homeBody = `
 </section>`;
 writeFileSync(join(OUT, 'index.html'),
   layout({ title: 'Обманные паттерны интерфейсов', description: 'Каталог обманных паттернов (dark patterns) на русском языке на примере продуктов СНГ.', body: homeBody, active: '/' }));
+
+// ----- отдельная страница «Этичный дизайн» -----
+{
+  const { data, body } = parseFrontmatter(readFileSync(join(SRC, 'ethics.md'), 'utf8'));
+  const ethicsBody = `
+<article class="prose-page">
+  <div class="shell prose-page__inner">
+    <aside class="prose-aside">
+      <a class="back" href="${u('/')}">← На главную</a>
+      <span class="pill">Материалы</span>
+    </aside>
+    <div class="prose">
+${mdToHtml(body)}
+    </div>
+  </div>
+</article>`;
+  writeFileSync(join(OUT, 'ethics.html'),
+    layout({ title: `${data.title} — Обманные паттерны`, description: data.description, body: ethicsBody, active: '/ethics.html' }));
+}
 
 cpSync(join(root, 'assets', 'styles.css'), join(OUT, 'assets', 'styles.css'));
 writeFileSync(join(OUT, '.nojekyll'), '');
