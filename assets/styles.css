@@ -344,6 +344,7 @@ th { font-size: .8rem; font-weight: 600; color: hsl(var(--muted-foreground)); }
   .hero__banner { padding: 16px; }
   .hero__cta { flex-direction: column; align-items: stretch; }
   .hero__cta .btn { width: 100%; }
+  .sec--about .btn { width: 100%; }
   .nav-groups { display: none; }
   .nav-toggle {
     display: inline-flex; align-items: center; gap: .4rem;
